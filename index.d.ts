@@ -1,7 +1,7 @@
 /**
  * Ethereum units
  */
-export type UNITS = {
+type UNITS = {
   wei: string
   kwei: string
   Kwei: string
@@ -36,12 +36,12 @@ export type UNITS = {
  * The typings based on solidity specification:
  * http://solidity.readthedocs.io/en/develop/abi-spec.html#json
  */
-export type AbiItemDescription = AbiFunctionDescription | AbiEventDescription
+type AbiItemDescription = AbiFunctionDescription | AbiEventDescription
 
 /**
  * Application binary interface's function description
  */
-export interface AbiFunctionDescription {
+interface AbiFunctionDescription {
   // The type of the function
   // The type can be omitted, defaulting to "function".
   type?: 'function' | 'constructor' | 'fallback'
@@ -70,7 +70,7 @@ export interface AbiFunctionDescription {
 /**
  * Type of an event description
  */
-export interface AbiEventDescription {
+interface AbiEventDescription {
   // Type always "event"
   type: 'event'
   // The name of the event;
@@ -84,7 +84,7 @@ export interface AbiEventDescription {
 /**
  * Type of input/output of an ABI item description
  */
-export interface AbiItemIO {
+interface AbiItemIO {
   // The name of the parameter
   name: string
   // The canonical type of the parameter (more below)
@@ -96,7 +96,7 @@ export interface AbiItemIO {
 /**
  * Type of input/output of an ABI event description
  */
-export interface AbiEventIO extends AbiItemIO {
+interface AbiEventIO extends AbiItemIO {
   // "true" if the field is part of the log’s topics, false if it one of the
   // log’s data segment.
   indexed?: boolean
@@ -105,7 +105,7 @@ export interface AbiEventIO extends AbiItemIO {
 /**
  * Ether price result type
  */
-export type EtherPrice = {
+type EtherPrice = {
   ethbtc: string
   ethbtc_timestamp: string
   ethusd: string
@@ -115,7 +115,7 @@ export type EtherPrice = {
 /**
  * Block info
  */
-export interface BlockInfo {
+interface BlockInfo {
   blockNumber: string
   blockReward: string
   timeStamp: string
@@ -124,7 +124,7 @@ export interface BlockInfo {
 /**
  * Block reward info
  */
-export interface BlockRewardInfo extends BlockInfo {
+interface BlockRewardInfo extends BlockInfo {
   blockMiner: string
   uncleInclusionReward: string
   uncles: Array<{
@@ -137,7 +137,7 @@ export interface BlockRewardInfo extends BlockInfo {
 /**
  * Geth block info
  */
-export interface GethBlockInfo {
+interface GethBlockInfo {
   difficulty: string
   extraData: string
   gasLimit: string
@@ -163,7 +163,7 @@ export interface GethBlockInfo {
 /**
  * Type of an event
  */
-export interface EventDescription {
+interface EventDescription {
   address: string
   topics: string[]
   data: string
@@ -181,7 +181,7 @@ export interface EventDescription {
 /**
  * Transaction info
  */
-export type TransactionDescription = {
+type TransactionDescription = {
   blockHash: string
   blockNumber: string
   confirmations?: string
@@ -208,7 +208,7 @@ export type TransactionDescription = {
 /**
  * Internal transaction info
  */
-export type InternalTransactionDescription = {
+type InternalTransactionDescription = {
   blockNumber: string
   timeStamp: string
   hash: string
@@ -228,7 +228,7 @@ export type InternalTransactionDescription = {
 /**
  * Type of transaction receipt
  */
-export type TransactionReceipt = {
+type TransactionReceipt = {
   blockHash: string
   blockNumber: string
   contractAddress?: any
@@ -244,7 +244,7 @@ export type TransactionReceipt = {
 }
 
 /** Networks names */
-export type NETWORKS = {
+type NETWORKS = {
   MAIN: string
   ROPSTEN: string
   KOVAN: string
@@ -638,7 +638,258 @@ declare class EtherscanApi {
 }
 
 declare namespace EtherscanApi {
+    /**
+     * Ethereum units
+     */
+    export type UNITS = {
+        wei: string
+        kwei: string
+        Kwei: string
+        babbage: string
+        femtoether: string
+        mwei: string
+        Mwei: string
+        lovelace: string
+        picoether: string
+        gwei: string
+        Gwei: string
+        shannon: string
+        nanoether: string
+        nano: string
+        szabo: string
+        microether: string
+        micro: string
+        finney: string
+        milliether: string
+        milli: string
+        ether: string
+        eth: string
+        kether: string
+        grand: string
+        mether: string
+        gether: string
+        tether: string
+    }
 
+    /**
+     * Application binary interface's item description
+     * The typings based on solidity specification:
+     * http://solidity.readthedocs.io/en/develop/abi-spec.html#json
+     */
+    export type AbiItemDescription = AbiFunctionDescription | AbiEventDescription
+
+    /**
+     * Application binary interface's function description
+     */
+    export interface AbiFunctionDescription {
+        // The type of the function
+        // The type can be omitted, defaulting to "function".
+        type?: 'function' | 'constructor' | 'fallback'
+        // The name of the function;
+        // Constructor and fallback function never have name
+        name: string
+        // An array of objects
+        // Fallback function doesn’t have inputs
+        inputs?: AbiItemIO[]
+        // An array of objects similar to inputs, can be omitted if function doesn’t
+        // return anything.
+        // Constructor and fallback function never have outputs
+        outputs?: AbiItemIO[]
+        // "true" if function accepts ether, defaults to false
+        payable?: boolean
+        // A string with one of the following values:
+        // - pure (specified to not read blockchain state)
+        // - view (specified to not modify the blockchain state)
+        // - nonpayable
+        // - payable (same as payable above).
+        stateMutability?: 'pure' | 'view' | 'nonpayable' | 'payable'
+        // "true" if function is either pure or view
+        constant?: boolean
+    }
+
+    /**
+     * Type of an event description
+     */
+    export interface AbiEventDescription {
+        // Type always "event"
+        type: 'event'
+        // The name of the event;
+        name: string
+        // An array of objects
+        inputs: AbiEventIO[]
+        // "true" if the event was declared as anonymous.
+        anonymous: boolean
+    }
+
+    /**
+     * Type of input/output of an ABI item description
+     */
+    export interface AbiItemIO {
+        // The name of the parameter
+        name: string
+        // The canonical type of the parameter (more below)
+        type: string
+        // Used for tuple types (more below)
+        components?: AbiItemIO[]
+    }
+
+    /**
+     * Type of input/output of an ABI event description
+     */
+    export interface AbiEventIO extends AbiItemIO {
+        // "true" if the field is part of the log’s topics, false if it one of the
+        // log’s data segment.
+        indexed?: boolean
+    }
+
+    /**
+     * Ether price result type
+     */
+    export type EtherPrice = {
+        ethbtc: string
+        ethbtc_timestamp: string
+        ethusd: string
+        ethusd_timestamp: string
+    }
+
+    /**
+     * Block info
+     */
+    export interface BlockInfo {
+        blockNumber: string
+        blockReward: string
+        timeStamp: string
+    }
+
+    /**
+     * Block reward info
+     */
+    export interface BlockRewardInfo extends BlockInfo {
+        blockMiner: string
+        uncleInclusionReward: string
+        uncles: Array<{
+            blockreward: string
+            miner: string
+            unclePosition: string
+        }>
+    }
+
+    /**
+     * Geth block info
+     */
+    export interface GethBlockInfo {
+        difficulty: string
+        extraData: string
+        gasLimit: string
+        gasUsed: string
+        hash: string
+        logsBloom: string
+        miner: string
+        mixHash: string
+        nonce: string
+        number: string
+        parentHash: string
+        receiptsRoot: string
+        sha3Uncles: string
+        size: string
+        stateRoot: string
+        timestamp: string
+        totalDifficulty: string
+        transactions: TransactionDescription[]
+        transactionsRoot: string
+        uncles: any[]
+    }
+
+    /**
+     * Type of an event
+     */
+    export interface EventDescription {
+        address: string
+        topics: string[]
+        data: string
+        blockNumber: string
+        logIndex: string
+        transactionHash: string
+        transactionIndex: string
+        timeStamp?: string
+        gasPrice?: string
+        gasUsed?: string
+        blockHash?: string
+        removed?: boolean
+    }
+
+    /**
+     * Transaction info
+     */
+    export type TransactionDescription = {
+        blockHash: string
+        blockNumber: string
+        confirmations?: string
+        contractAddress?: string
+        cumulativeGasUsed?: string
+        from: string
+        gas: string
+        gasPrice: string
+        gasUsed: string
+        hash: string
+        input: string
+        isError?: string
+        nonce: string
+        timeStamp?: string
+        to: string
+        transactionIndex: string
+        txreceipt_status?: string
+        value: string
+        v?: string
+        r?: string
+        s?: string
+    }
+
+    /**
+     * Internal transaction info
+     */
+    export type InternalTransactionDescription = {
+        blockNumber: string
+        timeStamp: string
+        hash: string
+        from: string
+        to: string
+        value: string
+        contractAddress: string
+        input: string
+        type: string
+        gas: string
+        gasUsed: string
+        traceId: string
+        isError: string
+        errCode: string
+    }
+
+    /**
+     * Type of transaction receipt
+     */
+    export type TransactionReceipt = {
+        blockHash: string
+        blockNumber: string
+        contractAddress?: any
+        cumulativeGasUsed: string
+        from: string
+        gasUsed: string
+        logs: EventDescription[]
+        logsBloom: string
+        root: string
+        to: string
+        transactionHash: string
+        transactionIndex: string
+    }
+
+    /** Networks names */
+    export type NETWORKS = {
+        MAIN: string
+        ROPSTEN: string
+        KOVAN: string
+        RINKEBY: string
+    }
 }
 
 export = EtherscanApi
